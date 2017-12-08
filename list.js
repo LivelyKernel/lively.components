@@ -438,6 +438,7 @@ export class List extends Morph {
       },
 
       selectedIndexes: {
+        after: ["items"],
         get() { return this.getProperty("selectedIndexes") || []; },
         set(indexes) {
           var maxLength = this.items.length;
