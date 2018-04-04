@@ -1344,7 +1344,7 @@ export class DropDownList extends Button {
         set(value) {
           let {listAlign, listMorph} = this;
 
-          if (!value) {
+          if (value === null || value === undefined) {
             listMorph.selection = null;
             this.label = "";
 
