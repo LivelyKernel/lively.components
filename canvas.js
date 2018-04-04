@@ -157,87 +157,97 @@ export class Canvas extends Morph {
   }
 
   finishDraw(style = {}) {
-    // Convenience method.  This just takes care of the 
-    // housekeeping of actually drawing the finished path
-    // if fill is true, fill the path.
-    let c = this.context,
-        color = style.color || "rgba(0,0,0,0.6)",
-        width = style.width || 4,
-        fill = style.fill, // default false
-        fillColor = style.fillColor || color;
+    /*
+      Convenience method.  This just takes care of the
+      housekeeping of actually drawing the finished path
+      if fill is true, fill the path.
+    */
+    let c = this.context;
+    let {
+      color = 'rgba(0,0,0,0.6)',
+      width = 4,
+      fill = false
+    } = style;
+    let fillColor = style.fillColor || color;
+
     if (color.toCSSString) color = color.toCSSString();
+    if (fillColor.toCSSString) fillColor = fillColor.toCSSString();
+
     c.strokeStyle = color;
     c.lineWidth = width;
     c.stroke();
     c.closePath();
+
     if (fill) {
-      c.fillStyle = fillColor
-      c.fill()
+      c.fillStyle = fillColor;
+      c.fill();
     }
   }
 
   line(from, to, style = {}) {
-    // draw a line from from to to, where both from and to are
-    // points.
-    // this.line(pt(0,0), pt(20,20))
-    let c = this.context
-    c.beginPath()
+    /*
+      draw a line from from to to, where both from and to are points.
+
+      this.line(pt(0,0), pt(20,20));
+    */
+    let c = this.context;
+    c.beginPath();
     c.moveTo(from.x, from.y);
     c.lineTo(to.x, to.y);
-    this.finishDraw(style)
-  }
-
-  testLine() {
-    this.line(pt(0,0), pt(20,20));
+    c.lineCap = 'round';
+    this.finishDraw(style);
   }
 
   arc(center, radius, startTheta, endTheta, counterClockwise = false, style = {}) {
-    let c = this.context
-    c.beginPath()
+    let c = this.context;
+    c.beginPath();
     c.arc(center.x, center.y, radius, startTheta, endTheta, counterClockwise);
-    this.finishDraw(style)
+    this.finishDraw(style);
   }
 
-  polygon(vertices, style={}) {
-    // draw a polygon, given n points as vertices
-    // this.polygon([pt(0,0), pt(20,20), pt(0, 20)], {fill: true, fillColor:Color.green})
-    let c = this.context
-    c.beginPath()
-    c.moveTo(vertices[0].x, vertices[0].y)
+  polygon(vertices, style = {}) {
+    /*
+      draw a polygon, given n points as vertices
+
+      this.polygon([pt(0,0), pt(20,20), pt(0, 20)], {fill: true, fillColor:Color.green});
+    */
+    let c = this.context;
+    c.beginPath();
+    c.moveTo(vertices[0].x, vertices[0].y);
     for (var i = 0; i < vertices.length; i++) {
-      c.lineTo(vertices[i].x, vertices[i].y)
+      c.lineTo(vertices[i].x, vertices[i].y);
     }
-    c.lineTo(vertices[0].x, vertices[0].y)
-    this.finishDraw(style)
+    c.lineTo(vertices[0].x, vertices[0].y);
+    this.finishDraw(style);
   }
 
-  testPolygon() {
-    this.polygon([pt(0,0), pt(20,20), pt(0, 20)], {fill: true, fillColor:Color.green});
-  }
+  text(textString, atPt, style = {}) {
+    /*
+      write textString at atPt as guided by style
 
-  text(textString, atPt, style={}) {
-    // write textString at atPt as guided by style
-    // this.text('Hello World', this.extent.scaleBy(0.5), {angle:Math.PI/4, color:"red", align:'center', font:'30px Comic Sans MS'})
-    // this.text('Hello World', this.extent.scaleBy(0.5), {color:"red", align:'center', font:'30px Comic Sans MS'})
-    // this.text('Hello World', this.extent.scaleBy(0.5))
-    let ctx = this.context,
-        color = style.color || "black",
-        font = style.font || "14px Arial",
-        align = style.align || "start",
-        baseline = style.baseline || "bottom"
-    ctx.save()
+      this.text('Hello World', this.extent.scaleBy(0.5), {angle: Math.PI/4, color: 'red', align: 'center', font: '30px Comic Sans MS'});
+      this.text('Hello World', this.extent.scaleBy(0.5), {color: 'red', align: 'center', font: '30px Comic Sans MS'});
+      this.text('Hello World', this.extent.scaleBy(0.5));
+    */
+    let ctx = this.context;
+    let {
+      color = 'black',
+      font = '14px Arial',
+      align = 'start',
+      baseline = 'bottom'
+    } = style;
+
+    ctx.save();
     ctx.font = font;
     ctx.fillStyle = color;
     ctx.textAlign = align;
-    ctx.textBaseline = baseline
+    ctx.textBaseline = baseline;
     if (style.angle && !isNaN(style.angle)) {
-      ctx.translate(atPt.x, atPt.y)
-      ctx.rotate(style.angle)
-      ctx.translate(-atPt.x, -atPt.y)
+      ctx.translate(atPt.x, atPt.y);
+      ctx.rotate(style.angle);
+      ctx.translate(-atPt.x, -atPt.y);
     }
-    // window.alert(atPt)
-    ctx.fillText(textString, atPt.x, atPt.y)
-    ctx.restore() 
-    // console.log(ctx)
+    ctx.fillText(textString, atPt.x, atPt.y);
+    ctx.restore();
   }
 }
